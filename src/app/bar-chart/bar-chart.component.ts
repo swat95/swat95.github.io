@@ -82,13 +82,14 @@ export class BarChartComponent implements AfterViewInit {
     for (let i = 0; i < reqstatarr.length; i++) {
       total += Number(reqstatarr[i]);
     }
+    console.log(total);
     return new Chart(this.ctx, {
       type: 'bar',
       data: {
         labels: this.date,
         datasets: [
           {
-            label: label + ":" + total,
+            label: label,
             data: reqstatarr,
             backgroundColor: "#2a4b7c",
             hoverBackgroundColor: "#2a7c1b"
