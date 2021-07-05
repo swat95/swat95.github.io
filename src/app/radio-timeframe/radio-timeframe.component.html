@@ -1,0 +1,5 @@
+<label>Please select the timeframe:</label><br />
+<div *ngFor="let week of weekList">
+  <input (change)="onSelectedTimeframe($event)" [(ngModel)]="timeSelected" type="radio" value={{week}} />&nbsp;Last
+  {{week}} week
+</div>

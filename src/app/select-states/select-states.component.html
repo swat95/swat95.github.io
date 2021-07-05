@@ -1,0 +1,20 @@
+<div class="main">
+    <h1 align="center">Corona Statistics Germany</h1><br /><br />
+    <div class="row">
+        <div class="col-sm"><label>Select state</label><br />
+            <select class="mat-select" [(ngModel)]="stateSelected" placeholder="Select state:"
+                (change)="onSelectedState($event)">
+                <option *ngFor="let state of lstStates" [value]="state.id">{{state.name}}</option>
+            </select>
+        </div>
+        <div class="col-sm">
+            <app-radio-timeframe (radioFrameSelected)="onRadioSelect($event)"></app-radio-timeframe>
+        </div>
+    </div>
+    <br /><br />
+    <div class="row">
+        <div class="col-sm">
+            <app-bar-chart></app-bar-chart>
+        </div>
+    </div>
+</div>
