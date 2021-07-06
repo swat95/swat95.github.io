@@ -17,17 +17,30 @@ export class BarChartComponent implements AfterViewInit {
   casesChart!: Chart;
   deathsChart!: Chart;
   recoveredChart!: Chart;
+  overviewChart!: Chart;
   canvas: any;
   ctx: any;
   date: any = [];
   totalrecovered: any = [];
   totaldeaths: any = [];
   totalcases: any = [];
-
+  totalstats: any = [];
 
   ngAfterViewInit(): void {
   }
 
+  private getOverviewStat(): any {
+    let total;
+    this.totalstats.length = 0;
+    for(var x of [ this.totalcases, this.totaldeaths, this.totalrecovered ]) {
+      total = 0;
+      for (let i = 0; i < x.length; i++) {
+        total += Number(x[i]);
+      }
+      this.totalstats.push(total);
+    }
+    return this.totalstats;
+  }
   /**
    * Call service to get the corona stat from a specific state of Deutschland
    * @stateid : State id to retrieve
@@ -53,40 +66,37 @@ export class BarChartComponent implements AfterViewInit {
           this.totaldeaths.push(response[i].totaldeath)
           this.date.push(response[i].date)
         }
-        console.log(response)
-        console.log(this.date);
+
         let current = (<Chart>this.casesChart);
         if (current)
           current.destroy();
-        this.casesChart = this.getCases('barChartCases', this.totalcases, "Total Cases");
+        this.casesChart = this.getCases('barChartCases', this.totalcases, this.date, "Total Cases");
 
         current = (<Chart>this.deathsChart);
         if (current)
           current.destroy();
-        this.deathsChart = this.getCases('barChartDeaths', this.totaldeaths, "Total Deaths");
+        this.deathsChart = this.getCases('barChartDeaths', this.totaldeaths, this.date, "Total Deaths");
 
         current = (<Chart>this.recoveredChart);
         if (current)
           current.destroy();
-        this.recoveredChart = this.getCases('barChartRecovered', this.totalrecovered, "Total Recovered");
+        this.recoveredChart = this.getCases('barChartRecovered', this.totalrecovered, this.date, "Total Recovered");
 
+        current = (<Chart>this.overviewChart);
+        if (current)
+          current.destroy();
+        this.overviewChart = this.getCases('barChartOverview',  this.getOverviewStat(), ["Total cases", "Total deaths", "Total recovered"], "Corana Overview");
       });
   }
 
-  public getCases(domvar: string, reqstatarr: any, label:string): Chart {
+  public getCases(domvar: string, reqstatarr: any, xaxis: any, label:string): Chart {
     this.canvas = document.getElementById(domvar);
     this.ctx = this.canvas.getContext('2d');
-    let total=0;
-
-    /* Display total stat numbers in the label */
-    for (let i = 0; i < reqstatarr.length; i++) {
-      total += Number(reqstatarr[i]);
-    }
-    console.log(total);
+    
     return new Chart(this.ctx, {
       type: 'bar',
       data: {
-        labels: this.date,
+        labels: xaxis,
         datasets: [
           {
             label: label,
